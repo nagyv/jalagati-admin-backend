@@ -1,5 +1,5 @@
 # joga-admin
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-url]][daviddm-image]
+[![Build Status][travis-image]][travis-url] 
 
 Jalagati joga admin backend
 
@@ -57,9 +57,13 @@ _(Nothing yet)_
 Copyright (c) 2014 Viktor Nagy. Licensed under the MIT license.
 
 
-[npm-url]: https://npmjs.org/package/joga-admin
-[npm-image]: https://badge.fury.io/js/joga-admin.svg
-[travis-url]: https://travis-ci.org/nagyv/joga-admin
-[travis-image]: https://travis-ci.org/nagyv/joga-admin.svg?branch=master
-[daviddm-url]: https://david-dm.org/nagyv/joga-admin.svg?theme=shields.io
-[daviddm-image]: https://david-dm.org/nagyv/joga-admin
+<!-- 
+[npm-url]: https://npmjs.org/package/jalagati-admin-backend
+[npm-image]: https://badge.fury.io/js/jalagati-admin-backend.svg
+-->
+[travis-url]: https://travis-ci.org/nagyv/jalagati-admin-backend
+[travis-image]: https://travis-ci.org/nagyv/jalagati-admin-backend.svg?branch=master
+<!--
+[daviddm-url]: https://david-dm.org/nagyv/jalagati-admin-backend.svg?theme=shields.io
+[daviddm-image]: https://david-dm.org/nagyv/jalagati-admin-backend
+-->
