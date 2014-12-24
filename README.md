@@ -1,7 +1,5 @@
-# joga-admin
+# Jalagati joga admin backend
 [![Build Status][travis-image]][travis-url] 
-
-Jalagati joga admin backend
 
 This is the backend service for [Jalagati admin](http://github.com/nagyv/jalagati-admin)
 
