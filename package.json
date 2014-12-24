@@ -49,7 +49,7 @@
     "node": ">=0.10.22"
   },
   "scripts": {
-    "test": "gulp test",
+    "test": "node ./node_modules/.bin/lab -v -l -c",
     "start": "node lib/index.js"
   },
   "main": "lib/index.js"
