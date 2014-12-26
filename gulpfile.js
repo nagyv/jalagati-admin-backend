@@ -16,7 +16,7 @@ gulp.task('lint', function () {
 
 gulp.task('lab', function () {
   gulp.src(paths.tests, {cwd: __dirname})
-    .pipe(plugins.lab('-v -l -c'));
+    .pipe(plugins.lab('-v -l -c -t 95'));
 });
 
 gulp.task('test', ['lint', 'lab']);
