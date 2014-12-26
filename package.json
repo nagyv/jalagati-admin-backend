@@ -21,6 +21,7 @@
   "dependencies": {
     "boom": "2.6.1",
     "catbox": "4.2.0",
+    "chai": "^1.10.0",
     "crumb": "4.0.0",
     "good": "5.1.0",
     "good-console": "^4.0.0",
