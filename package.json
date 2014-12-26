@@ -32,6 +32,7 @@
     "hapi-mongoose-db-connector": "^1.0.5",
     "joi": "5.0.2",
     "lodash": "^2.4.1",
+    "moment": "^2.8.4",
     "mongoose": "^3.8.21"
   },
   "devDependencies": {
