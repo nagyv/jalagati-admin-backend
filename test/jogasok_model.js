@@ -69,9 +69,15 @@ describe('Model Jogas:', function () {
   });
 
   it('can register an alkalom', function(done){
-    jogas.addAlkalom(Date.now(), function(err, cb){
+    var alk = {
+      starts: Date.now(),
+      _id: jogas._id
+    };
+    jogas.addAlkalom(alk, function(err, jogas) {
       expect(err).to.not.exist;
       expect(jogas.alkalmak).to.have.length(1);
+      expect(new Date(jogas.alkalmak[0].date).getTime()).to.equal(alk.starts);
+      expect(jogas.alkalmak[0].alkalom).to.equal(alk._id);
       done();
     });
   });
