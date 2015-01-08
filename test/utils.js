@@ -7,6 +7,7 @@ var server = require('../lib/');
 
 var User = mongoose.model('User');
 var Jogas = mongoose.model('Jogas');
+var Alkalom = mongoose.model('Alkalom');
 
 function createUser(done) {
   User.create({
@@ -31,6 +32,23 @@ function createJogas(done, cb) {
 }
 function clearAllJogas(done) {
   Jogas.remove({}, done);
+}
+
+function createAlkalom(done, cb) {
+  Alkalom.create({
+    starts: Date.now(),
+    tartja: 'Yogi'
+  }, function(err, jogas){
+    if(!cb) {
+      done();
+    } else {
+      cb(err, jogas);
+      done();
+    }
+  });
+}
+function clearAllAlkalom(done) {
+  Alkalom.remove({}, done);
 }
 
 function loggedInWrapper(testFunc) {
@@ -66,6 +84,8 @@ module.exports = {
   createUser: createUser,
   createJogas: createJogas,
   clearAllJogas: clearAllJogas,
+  createAlkalom: createAlkalom,
+  clearAllAlkalom: clearAllAlkalom,
   loggedInWrapper: loggedInWrapper,
   requiresLoginTest: requiresLoginTest
 };
