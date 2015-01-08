@@ -15,19 +15,12 @@ var server = require('../lib/');
 
 var User = mongoose.model('User');
 
-function createUser(done) {
-  User.create({
-      name: 'Full name',
-      email: 'test@test.com',
-      username: 'josh',
-      password: 'IamJosh'
-  }, done);
-}
+var utils = require('./utils');
 
 describe('Auth Controller:', function(){
 
   before(function(done){
-    createUser(done);
+    utils.createUser(done);
   });
 
   describe('login', function() {

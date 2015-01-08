@@ -1,7 +1,6 @@
 'use strict';
 
 var Lab = require('lab'),
-  mongoose = require('mongoose'),
   Hapi = require('hapi');
 
 var describe = Lab.experiment;
@@ -13,77 +12,21 @@ var afterEach = Lab.afterEach;
 var after = Lab.after;
 
 var server = require('../lib/');
-
-var User = mongoose.model('User');
-var Jogas = mongoose.model('Jogas');
-
-function createUser(done) {
-  User.create({
-      name: 'Full name',
-      email: 'test@test.com',
-      username: 'josh',
-      password: 'IamJosh'
-  }, done);
-}
-
-function createJogas(done, cb) {
-  Jogas.create({
-    name: 'My dear friend'
-  }, function(err, jogas){
-    if(!cb) {
-      done();
-    } else {
-      cb(err, jogas);
-      done();
-    }
-  });
-}
-function clearAllJogas(done) {
-  Jogas.remove({}, done);
-}
-
-function loggedInWrapper(testFunc) {
-  return function wrapped(done) {
-    var options = {
-      method: 'POST',
-      url: '/auth/login',
-      payload: {
-        username: 'josh',
-        password: 'IamJosh'
-      }
-    };
-    server.inject(options, function(response) {
-      expect(response.statusCode).to.equal(200);
-      var cookie = response.headers['set-cookie'][0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
-      var headers = { cookie: 'sid=' + cookie[1] };
-      testFunc(headers, done);
-    });
-  };
-}
-
-function requiresLoginTest(options) {
-  it('requires login', function(done){
-
-    server.inject(options, function (response) {
-      expect(response.statusCode).to.equal(302);
-      done();
-    });
-  });
-}
+var utils = require('./utils');
 
 describe('Jogas Controller:', function() {
 
   before(function (done) {
-    createUser(done);
+    utils.createUser(done);
   });
 
   describe('createJogas', function() {
-    requiresLoginTest({
+    utils.requiresLoginTest({
       method: 'POST',
       url: '/jogasok'
     });
 
-    it('creates new Jogas', loggedInWrapper(function(headers, done){
+    it('creates new Jogas', utils.loggedInWrapper(function(headers, done){
       var options = {
         headers: headers,
         method: 'POST',
@@ -101,25 +44,25 @@ describe('Jogas Controller:', function() {
     }));
 
     after(function(done){
-      clearAllJogas(done);
+      utils.clearAllJogas(done);
     });
 
   });
 
   describe('mindenJogas', function () {
-    requiresLoginTest({
+    utils.requiresLoginTest({
         method: 'GET',
         url: '/jogasok'
       });
 
     beforeEach(function(done){
-      createJogas(done);
+      utils.createJogas(done);
     });
     afterEach(function(done){
-      clearAllJogas(done);
+      utils.clearAllJogas(done);
     });
 
-    it('returns everyone', loggedInWrapper(function (headers, done) {
+    it('returns everyone', utils.loggedInWrapper(function (headers, done) {
       var options = {
         method: 'GET',
         url: '/jogasok',
@@ -137,23 +80,23 @@ describe('Jogas Controller:', function() {
 
   describe('egyJogas', function(){
     var jogasId;
-    requiresLoginTest({
+    utils.requiresLoginTest({
       method: 'GET',
       url: '/jogasok/abcd'
     });
 
     beforeEach(function(done){
-      createJogas(done, function(err, jogas) {
+      utils.createJogas(done, function(err, jogas) {
         if(!err) {
           jogasId = jogas._id;
         }
       });
     });
     afterEach(function(done){
-      clearAllJogas(done);
+      utils.clearAllJogas(done);
     });
 
-    it('returns the requested jogas', loggedInWrapper(function(headers, done){
+    it('returns the requested jogas', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
         url: '/jogasok/' + jogasId
@@ -169,23 +112,23 @@ describe('Jogas Controller:', function() {
 
   describe('updateJogas', function(){
     var jogasId;
-    requiresLoginTest({
+    utils.requiresLoginTest({
       method: 'POST',
       url: '/jogasok/abcd'
     });
 
     beforeEach(function(done){
-      createJogas(done, function(err, jogas) {
+      utils.createJogas(done, function(err, jogas) {
         if(!err) {
           jogasId = jogas._id;
         }
       });
     });
     afterEach(function(done){
-      clearAllJogas(done);
+      utils.clearAllJogas(done);
     });
 
-    it('returns the requested jogas', loggedInWrapper(function(headers, done){
+    it('returns the requested jogas', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
         method: 'POST',
@@ -206,17 +149,17 @@ describe('Jogas Controller:', function() {
   describe('ujBerlet', function(){
     var jogasId;
     beforeEach(function(done){
-      createJogas(done, function(err, jogas) {
+      utils.createJogas(done, function(err, jogas) {
         if(!err) {
           jogasId = jogas._id;
         }
       });
     });
     afterEach(function(done){
-      clearAllJogas(done);
+      utils.clearAllJogas(done);
     });
 
-    requiresLoginTest({
+    utils.requiresLoginTest({
       method: 'POST',
       url: '/jogasok/abcd/ujberlet',
       payload: {
@@ -224,7 +167,7 @@ describe('Jogas Controller:', function() {
       }
     });
 
-    it('creates a new Berlet for Jogas', loggedInWrapper(function(headers, done){
+    it('creates a new Berlet for Jogas', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
         method: 'POST',
