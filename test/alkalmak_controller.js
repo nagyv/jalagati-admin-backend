@@ -1,6 +1,8 @@
 'use strict';
 
 var Lab = require('lab'),
+  async = require('async'),
+  sinon = require('sinon'),
   Hapi = require('hapi');
 
 var describe = Lab.experiment;
@@ -63,6 +65,155 @@ describe('Alkalmak Controller:', function() {
         expect(rsp.statusCode).to.equal(200);
         expect(rsp.result).to.be.a('object');
         expect(rsp.result.tartja).to.equal('Very Cool');
+        done();
+      });
+    }));
+  });
+
+  describe('egyAlkalom', function(){
+    var alkalom;
+
+    beforeEach(function(done){
+      utils.createAlkalom(done, function(err, _alkalom){
+        alkalom = _alkalom;
+      });
+    });
+    afterEach(utils.clearAllAlkalom);
+
+    utils.requiresLoginTest({
+      url: '/alkalmak/abcd'
+    });
+
+    it('returns one Alkalom', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        url: '/alkalmak/' + alkalom._id
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.tartja).to.equal('Yogi');
+        done();
+      });
+    }));
+  });
+
+  describe('updateAlkalom', function(){
+    var alkalom;
+    beforeEach(function(done){
+      utils.createAlkalom(done, function(err, _alkalom){
+        alkalom = _alkalom;
+      });
+    });
+    afterEach(utils.clearAllAlkalom);
+
+    utils.requiresLoginTest({
+      url: '/alkalmak/abcd',
+      method: 'POST',
+      payload: {
+        starts: Date.now()
+      }
+    });
+
+    it('updates the Alkalom', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        url: '/alkalmak/' + alkalom._id,
+        method: 'POST',
+        payload: {
+          tartja: 'Big Buddha'
+        }
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.tartja).to.equal('Big Buddha');
+        done();
+      });
+    }));
+  });
+
+  describe('addResztvevo', function(){
+    var alkalom, jogas;
+    beforeEach(function(done){
+      async.parallel([
+        function(cb){
+          utils.createJogas(cb, function(err, _jogas){
+            jogas = _jogas;
+          });
+        },
+        function(cb){
+          utils.createAlkalom(cb, function(err, _alkalom){
+            alkalom = _alkalom;
+          });
+        }
+      ], done);
+    });
+    afterEach(function(done){
+      async.parallel([
+        utils.clearAllAlkalom,
+        utils.clearAllJogas
+      ], done);
+    });
+
+    utils.requiresLoginTest({
+      url: '/alkalmak/abcd/addResztvevo',
+      method: 'POST',
+      payload: {}
+    });
+
+    it('adds a resztvevo', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        url: '/alkalmak/' + alkalom._id + '/addResztvevo',
+        method: 'POST',
+        payload: {
+          jogasId: jogas._id
+        }
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.resztvevok).to.have.length(1);
+        done();
+      });
+    }));
+
+    it('uses Berlet if Jogas has one', utils.loggedInWrapper(function(headers, done){
+      // preparations for the test
+      async.series([
+        // buy Berlet
+        function(cb){
+          utils.buyBerlet(jogas, cb);
+        },
+        // call the backend
+        function(cb){
+          var o = {
+            headers: headers,
+            url: '/alkalmak/' + alkalom._id + '/addResztvevo',
+            method: 'POST',
+            payload: {
+              jogasId: jogas._id
+            }
+          };
+          server.inject(o, function(rsp){
+            expect(rsp.statusCode).to.equal(200);
+            expect(rsp.result).to.be.a('object');
+            expect(rsp.result.resztvevok).to.have.length(1);
+            cb();
+          });
+        },
+        // refresh the jogas' data
+        function(cb) {
+          utils.getJogas(jogas, cb);
+        }
+      ], function(err, stuff){
+        if(err) {done(err);}
+
+        // this is the real test
+        var _jogas = stuff[2];
+        expect(_jogas.berlet.felhasznalva).to.have.length(1);
+
         done();
       });
     }));

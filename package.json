@@ -19,6 +19,7 @@
     "composer"
   ],
   "dependencies": {
+    "async": "^0.9.0",
     "boom": "2.6.1",
     "catbox": "4.2.0",
     "chai": "^1.10.0",
@@ -37,15 +38,16 @@
   },
   "devDependencies": {
     "gulp": "^3.6.2",
-    "gulp-util": "^2.2.16",
     "gulp-bump": "^0.1.8",
     "gulp-jshint": "^1.5.5",
-    "gulp-nodemon": "^1.0.4",
-    "jshint-stylish": "^0.2.0",
-    "gulp-load-plugins": "^0.5.1",
-    "gulp-plumber": "^0.6.2",
     "gulp-lab": "^0.0.7",
-    "lab": "3.x.x"
+    "gulp-load-plugins": "^0.5.1",
+    "gulp-nodemon": "^1.0.4",
+    "gulp-plumber": "^0.6.2",
+    "gulp-util": "^2.2.16",
+    "jshint-stylish": "^0.2.0",
+    "lab": "3.x.x",
+    "sinon": "^1.12.2"
   },
   "engines": {
     "node": ">=0.10.22"

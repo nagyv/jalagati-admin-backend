@@ -120,8 +120,12 @@ describe('Model Jogas:', function () {
     });
     it('can not be used if inValid', function (done) {
       berlet.alkalmak = 1;
-      berlet.felhasznalva = [Date.now()];
+      berlet.felhasznalva = [{
+        date: Date.now(),
+        alkalom: berlet._id
+      }];
       berlet.save(function (err) {
+        expect(err).to.not.exist;
         berlet.hasznal(Date.now(), function (err) {
           expect(err).to.exist;
           done();
@@ -135,7 +139,10 @@ describe('Model Jogas:', function () {
       });
       it('is not valid if has no more alkalom', function (done) {
         berlet.alkalmak = 1;
-        berlet.felhasznalva = [Date.now()];
+        berlet.felhasznalva = [{
+          date: Date.now(),
+          alkalom: berlet._id
+        }];
         expect(berlet.isValid()).to.be.false();
         done()
       });

@@ -8,6 +8,7 @@ var server = require('../lib/');
 var User = mongoose.model('User');
 var Jogas = mongoose.model('Jogas');
 var Alkalom = mongoose.model('Alkalom');
+var Berlet = mongoose.model('Berlet');
 
 function createUser(done) {
   User.create({
@@ -33,6 +34,17 @@ function createJogas(done, cb) {
 function clearAllJogas(done) {
   Jogas.remove({}, done);
 }
+function getJogas(jogas, cb) {
+  Jogas.findById(jogas._id, cb);
+}
+
+function buyBerlet(jogas, cb) {
+  jogas.berletek.push(new Berlet({
+    alkalmak: 10
+  }));
+  jogas.save(cb);
+}
+
 
 function createAlkalom(done, cb) {
   Alkalom.create({
@@ -83,6 +95,8 @@ function requiresLoginTest(options) {
 module.exports = {
   createUser: createUser,
   createJogas: createJogas,
+  buyBerlet: buyBerlet,
+  getJogas: getJogas,
   clearAllJogas: clearAllJogas,
   createAlkalom: createAlkalom,
   clearAllAlkalom: clearAllAlkalom,
