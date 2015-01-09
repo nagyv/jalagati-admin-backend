@@ -107,7 +107,7 @@ describe('Auth Controller:', function(){
         expect(response.statusCode).to.equal(200);
         var cookie = response.headers['set-cookie'][0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
 
-        options.method = 'GET'
+        options.method = 'GET';
         options.headers = { cookie: 'sid=' + cookie[1] };
         options.url = '/auth/logout';
         server.inject(options, function(response) {
@@ -115,6 +115,28 @@ describe('Auth Controller:', function(){
           expect(response.result).to.equal('success');
           done();
         });
+      });
+    });
+  });
+
+  describe('signup', function(){
+    it('creates new User', function(done){
+      var o = {
+        method: 'POST',
+        url: '/auth/signup',
+        payload: {
+          username: 'jane',
+          password: 'IamJane',
+          password2: 'IamJane'
+        }
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        var cookie = rsp.headers['set-cookie'][0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        console.log({ cookie: 'sid=' + cookie[1] });
+        expect(cookie[1]).to.not.be.empty;
+        expect(rsp.result).to.equal('success');
+        done();
       });
     });
   });
