@@ -36,6 +36,9 @@ describe('Auth Controller:', function(){
       };
       server.inject(options, function(response) {
         expect(response.statusCode).to.equal(200);
+        expect(response.result.name).to.equal('josh');
+        expect(response.result.password).to.not.exist;
+        expect(response.result.id).to.exist;
         done();
       });
     });
@@ -135,7 +138,9 @@ describe('Auth Controller:', function(){
         var cookie = rsp.headers['set-cookie'][0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
         console.log({ cookie: 'sid=' + cookie[1] });
         expect(cookie[1]).to.not.be.empty;
-        expect(rsp.result).to.equal('success');
+        expect(rsp.result.name).to.equal('jane');
+        expect(rsp.result.password).to.not.exist;
+        expect(rsp.result.id).to.exist;
         done();
       });
     });
