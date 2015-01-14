@@ -31,6 +31,7 @@
     "hapi": "^8.0.0",
     "hapi-auth-bearer-token": "^3.1.0",
     "hapi-mongoose-db-connector": "^1.0.5",
+    "hapi-raven": "^3.0.0",
     "joi": "5.0.2",
     "lodash": "^2.4.1",
     "moment": "^2.8.4",
