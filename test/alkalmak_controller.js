@@ -165,11 +165,8 @@ describe('Alkalmak Controller:', function() {
     it('adds a resztvevo', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
-        url: '/alkalmak/' + alkalom._id + '/addResztvevo',
-        method: 'POST',
-        payload: {
-          jogasId: jogas._id
-        }
+        url: '/alkalmak/' + alkalom._id + '/addResztvevo?jogasId=' + jogas._id,
+        method: 'POST'
       };
       server.inject(o, function(rsp){
         expect(rsp.statusCode).to.equal(200);
@@ -190,11 +187,8 @@ describe('Alkalmak Controller:', function() {
         function(cb){
           var o = {
             headers: headers,
-            url: '/alkalmak/' + alkalom._id + '/addResztvevo',
-            method: 'POST',
-            payload: {
-              jogasId: jogas._id
-            }
+            url: '/alkalmak/' + alkalom._id + '/addResztvevo?jogasId=' + jogas._id,
+            method: 'POST'
           };
           server.inject(o, function(rsp){
             expect(rsp.statusCode).to.equal(200);

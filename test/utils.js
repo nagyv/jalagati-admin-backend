@@ -75,8 +75,7 @@ function loggedInWrapper(testFunc) {
     };
     server.inject(options, function(response) {
       expect(response.statusCode).to.equal(200);
-      var cookie = response.headers['set-cookie'][0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
-      var headers = { cookie: 'sid=' + cookie[1] };
+      var headers = { authorization: 'Bearer 1234'};
       testFunc(headers, done);
     });
   };
@@ -84,9 +83,8 @@ function loggedInWrapper(testFunc) {
 
 function requiresLoginTest(options) {
   it('requires login', function(done){
-
     server.inject(options, function (response) {
-      expect(response.statusCode).to.equal(302);
+      expect(response.statusCode).to.equal(401);
       done();
     });
   });
