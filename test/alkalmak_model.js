@@ -1,6 +1,7 @@
 var Lab = require('lab'),
   server = require('../lib/'),
   mongoose = require('mongoose'),
+  sinon = require('sinon'),
   User = mongoose.model('User'),
   Alkalom = mongoose.model('Alkalom'),
   Jogas = mongoose.model('Jogas');
@@ -41,13 +42,25 @@ describe('Model Alkalom:', function () {
   });
   describe('Method addResztvevo', function () {
     it('should be able to handle more people', function (done) {
-      return alkalom.save(function (/*err*/) {
+      alkalom.save(function (/*err*/) {
         alkalom.addResztvevo(jogas, function (err) {
           expect(err).to.not.exist();
           expect(alkalom.resztvevok).to.have.length(1);
           expect(alkalom.resztvevok[0]).to.equal(jogas._id);
           done();
         });
+      });
+    });
+  });
+
+  describe('method removeResztvevo', function() {
+    it('should remove a resztvevo', function(done){
+      sinon.spy(jogas, 'removeAlkalom');
+      alkalom.removeResztvevo(jogas, function(err, alkalom){
+        expect(err).to.not.exist();
+        expect(alkalom.resztvevok).to.have.length(0);
+        expect(jogas.removeAlkalom.calledOnce).to.be.true();
+        done();
       });
     });
   });

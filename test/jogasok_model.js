@@ -4,6 +4,7 @@
 var Lab = require('lab'),
   server = require('../lib/'),
   mongoose = require('mongoose'),
+  utils = require('./utils'),
   User = mongoose.model('User'),
   Berlet = mongoose.model('Berlet'),
   Jogas = mongoose.model('Jogas');
@@ -79,6 +80,39 @@ describe('Model Jogas:', function () {
       expect(new Date(jogas.alkalmak[0].date).getTime()).to.equal(alk.starts);
       expect(jogas.alkalmak[0].alkalom).to.equal(alk._id);
       done();
+    });
+  });
+
+  describe('removeAlkalom', function(){
+    beforeEach(function(done){
+      utils.buyBerlet(jogas, done);
+    });
+
+    it('can remove an alkalom', function(done){
+      var alk = {
+        starts: Date.now(),
+        _id: jogas._id
+      };
+      jogas.addAlkalom(alk, function(err, jogas) {
+        jogas.removeAlkalom(alk, function(err, jogas) {
+          expect(err).to.not.exist;
+          expect(jogas.alkalmak).to.have.length(0);
+          done();
+        });
+      });
+    });
+    it('can remove a berlet usage', function(done){
+      var alk = {
+        starts: Date.now(),
+        _id: jogas._id
+      };
+      jogas.addAlkalom(alk, function(err, jogas) {
+        jogas.removeAlkalom(alk, function(err, jogas) {
+          expect(err).to.not.exist;
+          expect(jogas.berlet.felhasznalva).to.have.length(0);
+          done();
+        });
+      });
     });
   });
 

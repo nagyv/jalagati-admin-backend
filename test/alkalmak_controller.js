@@ -213,4 +213,37 @@ describe('Alkalmak Controller:', function() {
     }));
   });
 
+  describe('removeResztvevo', function(){
+    var alkalom, jogas;
+
+    beforeEach(function(done){
+      async.parallel([
+        function(cb){
+          utils.createJogas(cb, function(err, _jogas){
+            jogas = _jogas;
+          });
+        },
+        function(cb){
+          utils.createAlkalom(cb, function(err, _alkalom){
+            alkalom = _alkalom;
+          });
+        }
+      ], function(){
+        utils.addResztvevo(jogas, alkalom, done);
+      });
+    });
+    it('removes jogas from alkalom', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        url: '/alkalmak/' + alkalom._id + '/removeResztvevo?jogasId=' + jogas._id,
+        method: 'POST'
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.resztvevok).to.have.length(0);
+        done();
+      });
+    }));
+  });
 });

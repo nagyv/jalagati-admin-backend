@@ -62,6 +62,9 @@ function createAlkalom(done, cb) {
 function clearAllAlkalom(done) {
   Alkalom.remove({}, done);
 }
+function addResztvevo(jogas, alkalom, done) {
+  alkalom.addResztvevo(jogas, done);
+}
 
 function loggedInWrapper(testFunc) {
   return function wrapped(done) {
@@ -98,6 +101,7 @@ module.exports = {
   clearAllJogas: clearAllJogas,
   createAlkalom: createAlkalom,
   clearAllAlkalom: clearAllAlkalom,
+  addResztvevo: addResztvevo,
   loggedInWrapper: loggedInWrapper,
   requiresLoginTest: requiresLoginTest
 };
