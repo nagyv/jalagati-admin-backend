@@ -69,53 +69,6 @@ describe('Model Jogas:', function () {
     });
   });
 
-  it('can register an alkalom', function(done){
-    var alk = {
-      starts: Date.now(),
-      _id: jogas._id
-    };
-    jogas.addAlkalom(alk, function(err, jogas) {
-      expect(err).to.not.exist;
-      expect(jogas.alkalmak).to.have.length(1);
-      expect(new Date(jogas.alkalmak[0].date).getTime()).to.equal(alk.starts);
-      expect(jogas.alkalmak[0].alkalom).to.equal(alk._id);
-      done();
-    });
-  });
-
-  describe('removeAlkalom', function(){
-    beforeEach(function(done){
-      utils.buyBerlet(jogas, done);
-    });
-
-    it('can remove an alkalom', function(done){
-      var alk = {
-        starts: Date.now(),
-        _id: jogas._id
-      };
-      jogas.addAlkalom(alk, function(err, jogas) {
-        jogas.removeAlkalom(alk, function(err, jogas) {
-          expect(err).to.not.exist;
-          expect(jogas.alkalmak).to.have.length(0);
-          done();
-        });
-      });
-    });
-    it('can remove a berlet usage', function(done){
-      var alk = {
-        starts: Date.now(),
-        _id: jogas._id
-      };
-      jogas.addAlkalom(alk, function(err, jogas) {
-        jogas.removeAlkalom(alk, function(err, jogas) {
-          expect(err).to.not.exist;
-          expect(jogas.berlet.felhasznalva).to.have.length(0);
-          done();
-        });
-      });
-    });
-  });
-
   describe('Model Berlet', function () {
     beforeEach(function (done) {
       berlet = new Berlet({
