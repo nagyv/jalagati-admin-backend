@@ -171,7 +171,7 @@ describe('Alkalmak Controller:', function() {
       server.inject(o, function(rsp){
         expect(rsp.statusCode).to.equal(200);
         expect(rsp.result).to.be.a('object');
-        expect(rsp.result.resztvevok).to.have.length(1);
+        expect(rsp.result.jogas).to.be.a('object');
         done();
       });
     }));
@@ -193,7 +193,7 @@ describe('Alkalmak Controller:', function() {
           server.inject(o, function(rsp){
             expect(rsp.statusCode).to.equal(200);
             expect(rsp.result).to.be.a('object');
-            expect(rsp.result.resztvevok).to.have.length(1);
+            expect(rsp.result.jogas).to.be.a('object');
             cb();
           });
         },
@@ -240,8 +240,7 @@ describe('Alkalmak Controller:', function() {
       };
       server.inject(o, function(rsp){
         expect(rsp.statusCode).to.equal(200);
-        expect(rsp.result).to.be.a('object');
-        expect(rsp.result.resztvevok).to.have.length(0);
+        expect(rsp.result).to.be.null;
         done();
       });
     }));
