@@ -48,11 +48,13 @@ describe('Model Alkalom:', function () {
         alkalom.addResztvevo(jogas, function (err) {
           expect(err).to.not.exist();
           expect(alkalom.resztvevok).to.have.length(1);
-          alkalom.populate('resztvevok', function(err, alkalom){
-            expect(err).to.not.exist();
-            expect(alkalom.resztvevok[0].jogas.toString()).to.equal(jogas.id.toString());
-            expect(alkalom.resztvevok[0].alkalom.toString()).to.equal(alkalom.id.toString());
-            done();
+          expect(alkalom.resztvevok[0].name).to.equal(jogas.name);
+          Resztvevo.findById(alkalom.resztvevok[0].resztvevo)
+            .exec(function(err, resztvevo){
+              expect(err).to.not.exist();
+              expect(resztvevo.jogas.toString()).to.equal(jogas.id.toString());
+              expect(resztvevo.alkalom.toString()).to.equal(alkalom.id.toString());
+              done();
           });
         });
       });
@@ -68,7 +70,7 @@ describe('Model Alkalom:', function () {
     });
     it('should remove a resztvevo', function(done){
       expect(alkalom.resztvevok).to.have.length(1);
-      alkalom.removeResztvevo(alkalom.resztvevok[0], function(err){
+      alkalom.removeResztvevo(alkalom.resztvevok[0].resztvevo, function(err){
         expect(err).to.not.exist();
         expect(alkalom.resztvevok).to.have.length(0);
         expect(Resztvevo.count({}, function(err, count){
