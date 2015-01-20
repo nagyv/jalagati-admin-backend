@@ -17,12 +17,9 @@ var beforeEach = Lab.beforeEach;
 var afterEach = Lab.afterEach;
 var after = Lab.after;
 
-//Globals
-var jogas;
-var berlet;
-
 //The tests
 describe('Model Jogas:', function () {
+  var jogas;
   beforeEach(function (done) {
     jogas = new Jogas({
       name: 'Kiss Attila',
@@ -55,7 +52,7 @@ describe('Model Jogas:', function () {
     });
   });
   it('has the first valid berlet selected', function(done){
-    berlet = {
+    var berlet = {
       alkalmak: 10
     };
     jogas.berletek.push(berlet);
@@ -69,108 +66,6 @@ describe('Model Jogas:', function () {
     });
   });
 
-  describe('Model Berlet', function () {
-    beforeEach(function (done) {
-      berlet = new Berlet({
-        alkalmak: 10
-      });
-      done();
-    });
-    it('has path berlet', function (done) {
-      berlet.save(function (err) {
-        expect(err).to.not.exist;
-        jogas.berletek.push(berlet);
-        expect(jogas.berlet.id).to.be.equal(berlet.id);
-        done();
-      });
-    });
-    it('can be attached to a Jogas', function (done) {
-      berlet.save(function (err) {
-        expect(err).to.not.exist;
-        jogas.berletek.push(berlet);
-        jogas.save(function (err) {
-          expect(err).to.not.exist;
-          done();
-        });
-      });
-    });
-    it('can be used up if valid', function (done) {
-      berlet.save(function (err) {
-        expect(err).to.not.exist;
-        berlet.hasznal(Date.now(), function (err, berlet) {
-          expect(err).to.not.exist;
-          expect(berlet).to.exist;
-          expect(berlet.felhasznalva).to.have.length(1);
-          done();
-        });
-      });
-    });
-    it('can not be used if inValid', function (done) {
-      berlet.alkalmak = 1;
-      berlet.felhasznalva = [{
-        date: Date.now(),
-        alkalom: berlet._id
-      }];
-      berlet.save(function (err) {
-        expect(err).to.not.exist;
-        berlet.hasznal(Date.now(), function (err) {
-          expect(err).to.exist;
-          done();
-        });
-      });
-    });
-    describe('alkalomra', function () {
-      it('is valid if has alkalom', function (done) {
-        expect(berlet.isValid()).to.be.true();
-        done();
-      });
-      it('is not valid if has no more alkalom', function (done) {
-        berlet.alkalmak = 1;
-        berlet.felhasznalva = [{
-          date: Date.now(),
-          alkalom: berlet._id
-        }];
-        expect(berlet.isValid()).to.be.false();
-        done()
-      });
-    });
-    describe('idore', function () {
-      beforeEach(function (done) {
-        berlet.startDate = Date.now();
-        berlet.endDate = Date.now() + 3600;
-        done();
-      });
-
-      it('fails if dates are wrong', function(done){
-        berlet.startDate = Date.now() + 1000;
-        berlet.save(function(err){
-          expect(err).to.exist;
-          done();
-        });
-      });
-
-      it('is valid if date is OK', function (done) {
-        expect(berlet.isValid()).to.be.true();
-        done();
-      });
-
-      it('is not valid if out of date range', function (done) {
-        berlet.alkalmak = 0;
-        berlet.startDate = Date.now() - 1500;
-        berlet.endDate = Date.now() - 2000;
-        expect(berlet.isValid()).to.be.false();
-        done();
-      });
-      it('is not valid if out of date range - 2', function (done) {
-        berlet.alkalmak = 0;
-        berlet.startDate = Date.now() + 3500;
-        berlet.endDate = Date.now() + 5000;
-        expect(berlet.isValid()).to.be.false();
-        done();
-      });
-    });
-  });
-
   afterEach(function (done) {
     Jogas.remove({});
     User.remove({});
@@ -180,5 +75,134 @@ describe('Model Jogas:', function () {
     Jogas.remove().exec();
     User.remove().exec();
     done();
+  });
+});
+
+describe('Model Berlet', function () {
+  var jogas, berlet;
+  beforeEach(function (done) {
+    jogas = new Jogas({
+      name: 'Kiss Attila',
+      nick: 'kicsi'
+    });
+    jogas.save(done);
+  });
+  beforeEach(function (done) {
+    berlet = new Berlet({
+      alkalmak: 10
+    });
+    jogas.berletek.push(berlet);
+    done();
+  });
+  afterEach(function (done) {
+    Jogas.remove({});
+    Berlet.remove({});
+    done();
+  });
+
+  it('can be attached to Jogas and accessed under berlet', function (done) {
+    jogas.save(function (err) {
+      expect(err).to.not.exist;
+      expect(jogas.berlet.id).to.be.equal(berlet.id);
+      done();
+    });
+  });
+  it('can be used up if valid', function (done) {
+    jogas.save(function (err) {
+      expect(err).to.not.exist;
+      jogas.berlet.hasznal({
+        _id: jogas._id,
+        alkalom: berlet._id
+      }, function (err, jogas) {
+        expect(err).to.not.exist;
+        expect(jogas.berlet).to.exist;
+        expect(jogas.berlet.felhasznalva).to.have.length(1);
+        done();
+      });
+    });
+  });
+  it('can not be used if invalid', function (done) {
+    var used = jogas.berletek[0];
+    used.alkalmak = 1;
+    used.felhasznalva = [{
+      resztvevo: jogas._id,
+      alkalom: berlet._id
+    }];
+    used.save(function (err) {
+      expect(err).to.not.exist;
+      used.hasznal({
+          resztvevo: jogas._id,
+          alkalom: berlet._id
+        }, function (err) {
+        expect(err).to.exist;
+        done();
+      });
+    });
+  });
+  it('can restore usage', function(done){
+    var used = jogas.berletek[0];
+    used.alkalmak = 1;
+    used.felhasznalva = [{
+      resztvevo: jogas._id,
+      alkalom: berlet._id
+    }];
+    used.save(function (err) {
+      expect(err).to.not.exist;
+      used.restore(berlet, function (err) {
+        expect(err).to.not.exist;
+        expect(used.felhasznalva).to.have.length(0);
+        done();
+      });
+    });
+  });
+  describe('alkalomra', function () {
+    it('is valid if has alkalom', function (done) {
+      expect(berlet.isValid()).to.be.true();
+      done();
+    });
+    it('is not valid if has no more alkalom', function (done) {
+      berlet.alkalmak = 1;
+      berlet.felhasznalva = [{
+        date: Date.now(),
+        alkalom: berlet._id
+      }];
+      expect(berlet.isValid()).to.be.false();
+      done()
+    });
+  });
+  describe('idore', function () {
+    beforeEach(function (done) {
+      berlet.startDate = Date.now();
+      berlet.endDate = Date.now() + 3600;
+      done();
+    });
+
+    it('fails if dates are wrong', function(done){
+      berlet.startDate = Date.now() + 1000;
+      berlet.save(function(err){
+        expect(err).to.exist;
+        done();
+      });
+    });
+
+    it('is valid if date is OK', function (done) {
+      expect(berlet.isValid()).to.be.true();
+      done();
+    });
+
+    it('is not valid if out of date range', function (done) {
+      berlet.alkalmak = 0;
+      berlet.startDate = Date.now() - 1500;
+      berlet.endDate = Date.now() - 2000;
+      expect(berlet.isValid()).to.be.false();
+      done();
+    });
+    it('is not valid if out of date range - 2', function (done) {
+      berlet.alkalmak = 0;
+      berlet.startDate = Date.now() + 3500;
+      berlet.endDate = Date.now() + 5000;
+      expect(berlet.isValid()).to.be.false();
+      done();
+    });
   });
 });
