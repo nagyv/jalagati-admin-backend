@@ -4,6 +4,7 @@
 var Lab = require('lab'),
   server = require('../lib/'),
   mongoose = require('mongoose'),
+  moment = require('moment'),
   utils = require('./utils'),
   User = mongoose.model('User'),
   Berlet = mongoose.model('Berlet'),
@@ -156,6 +157,14 @@ describe('Model Berlet', function () {
     });
   });
   describe('alkalomra', function () {
+    it('has 3 month limit for alkalmak', function(done){
+      berlet.save(function(err, berlet){
+        expect(err).to.not.exist;
+        expect(moment().isSame(berlet.startDate, 'day')).to.be.true();
+        expect(moment().add(3, 'months').isSame(berlet.endDate, 'day')).to.be.true();
+        done();
+      });
+    });
     it('is valid if has alkalom', function (done) {
       expect(berlet.isValid()).to.be.true();
       done();
@@ -178,7 +187,7 @@ describe('Model Berlet', function () {
     });
 
     it('fails if dates are wrong', function(done){
-      berlet.startDate = Date.now() + 1000;
+      berlet.startDate = moment(berlet.endDate).add(1, 'day').toDate();
       berlet.save(function(err){
         expect(err).to.exist;
         done();
