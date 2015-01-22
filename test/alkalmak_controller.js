@@ -58,7 +58,9 @@ describe('Alkalmak Controller:', function() {
         method: 'POST',
         payload: {
           starts: Date.now(),
-          tartja: 'Very Cool'
+          tartja: 'Very Cool',
+          location: 'Valahol',
+          segiti: 'valaki'
         }
       };
       server.inject(o, function(rsp){
@@ -121,7 +123,10 @@ describe('Alkalmak Controller:', function() {
         url: '/alkalmak/' + alkalom._id,
         method: 'POST',
         payload: {
-          tartja: 'Big Buddha'
+          tartja: 'Big Buddha',
+          starts: alkalom.starts,
+          location: 'Valahol',
+          segiti: 'valaki'
         }
       };
       server.inject(o, function(rsp){
@@ -237,7 +242,7 @@ describe('Alkalmak Controller:', function() {
     it('removes jogas from alkalom', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
-        url: '/alkalmak/' + alkalom._id + '/removeResztvevo?jogasId=' + jogas._id,
+        url: '/alkalmak/' + alkalom._id + '/removeResztvevo?resztvevoId=' + jogas._id,
         method: 'POST'
       };
       server.inject(o, function(rsp){

@@ -51,7 +51,7 @@ describe('Resztvevok Controller', function(){
       var o = {
         headers: headers,
         method: 'POST',
-        url: '/resztvevok/' + alkalom.resztvevok[0].resztvevo + '/update'
+        url: '/resztvevok/' + alkalom.resztvevok[0].resztvevo + '/update?fizetett=100'
       };
       server.inject(o, function(rsp){
         expect(rsp.statusCode).to.equal(200);
