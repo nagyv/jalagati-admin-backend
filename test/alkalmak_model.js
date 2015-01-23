@@ -152,6 +152,27 @@ describe('Model Resztvevo', function(){
     });
   });
 
+  it('can restore berlet', function(done){
+    jogas.berletek.push({
+      alkalmak: 10
+    });
+    jogas.save(function(err, jogas){
+      var resztvevo = new Resztvevo({
+        jogas: jogas,
+        alkalom: alkalom
+      });
+      resztvevo.save(function(err, resztvevo){
+        expect(err).to.not.exist;
+        resztvevo.restoreBerlet(function(err){
+          console.log(err);
+          expect(err).to.not.exist;
+          expect(jogas.berlet.felhasznalva).has.length(0);
+          done();
+        });
+      });
+    });
+  });
+
   it('restores berlet when removed', function(done){
     jogas.berletek.push({
       alkalmak: 10
@@ -164,6 +185,7 @@ describe('Model Resztvevo', function(){
       resztvevo.save(function(err, resztvevo){
         expect(err).to.not.exist;
         resztvevo.remove(function(err){
+          console.log(err);
           expect(err).to.not.exist;
           expect(jogas.berlet.felhasznalva).has.length(0);
           done();
