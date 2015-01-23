@@ -23,11 +23,14 @@ describe('Resztvevok Controller', function(){
     utils.createUser(done);
   });
   beforeEach(function(done){
-    async.parallel([
+    async.series([
       function(cb){
         utils.createJogas(cb, function(err, _jogas){
           jogas = _jogas;
         });
+      },
+      function(cb){
+        utils.buyBerlet(jogas, cb);
       },
       function(cb){
         utils.createAlkalom(cb, function(err, _alkalom){
@@ -43,11 +46,34 @@ describe('Resztvevok Controller', function(){
 
   describe('egyResztvevo', function(){
     utils.requiresLoginTest({
+      method: 'GET',
+      url: '/resztvevok/abcd'
+    });
+
+    it('returns a Resztvevo', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        method: 'GET',
+        url: '/resztvevok/' + alkalom.resztvevok[0].resztvevo
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.berlet).to.be.truthy;
+        expect(rsp.result.jogas.name).to.exist;
+        expect(rsp.result.alkalom.starts).to.exist;
+        done();
+      });
+    }));
+  });
+
+  describe('updateResztvevo', function(){
+    utils.requiresLoginTest({
       method: 'POST',
       url: '/resztvevok/abcd/update'
     });
 
-    it('returns one Resztvevo', utils.loggedInWrapper(function(headers, done){
+    it('updates a Resztvevo', utils.loggedInWrapper(function(headers, done){
       var o = {
         headers: headers,
         method: 'POST',
@@ -56,8 +82,30 @@ describe('Resztvevok Controller', function(){
       server.inject(o, function(rsp){
         expect(rsp.statusCode).to.equal(200);
         expect(rsp.result).to.be.a('object');
+        expect(rsp.result.fizetett).to.equal(100);
         expect(rsp.result.jogas.name).to.exist;
         expect(rsp.result.alkalom.starts).to.exist;
+        done();
+      });
+    }));
+  });
+
+  describe('removeBerlet', function(){
+    utils.requiresLoginTest({
+      method: 'POST',
+      url: '/resztvevok/abcd/removeBerlet'
+    });
+
+    it('removes attached Berlet', utils.loggedInWrapper(function(header, done){
+      var o = {
+        headers: header,
+        method: 'POST',
+        url: '/resztvevok/' + alkalom.resztvevok[0].resztvevo + '/removeBerlet'
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.berlet).to.be.null();
         done();
       });
     }));
