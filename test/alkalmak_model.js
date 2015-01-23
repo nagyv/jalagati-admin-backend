@@ -136,7 +136,8 @@ describe('Model Resztvevo', function(){
 
   it('uses berlet if exists', function(done){
     jogas.berletek.push({
-      alkalmak: 10
+      alkalmak: 10,
+      fizetett: 500
     });
     jogas.save(function(err, jogas){
       expect(err).to.not.exist;
@@ -154,7 +155,8 @@ describe('Model Resztvevo', function(){
 
   it('can restore berlet', function(done){
     jogas.berletek.push({
-      alkalmak: 10
+      alkalmak: 10,
+      fizetett: 500
     });
     jogas.save(function(err, jogas){
       var resztvevo = new Resztvevo({
@@ -175,7 +177,8 @@ describe('Model Resztvevo', function(){
 
   it('restores berlet when removed', function(done){
     jogas.berletek.push({
-      alkalmak: 10
+      alkalmak: 10,
+      fizetett: 500
     });
     jogas.save(function(err, jogas){
       var resztvevo = new Resztvevo({

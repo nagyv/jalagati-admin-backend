@@ -54,11 +54,13 @@ describe('Model Jogas:', function () {
   });
   it('has the first valid berlet selected', function(done){
     var berlet = {
-      alkalmak: 10
+      alkalmak: 10,
+      fizetett: 500
     };
     jogas.berletek.push(berlet);
     jogas.berletek.push({
-      alkalmak: 5
+      alkalmak: 5,
+      fizetett: 500
     });
     jogas.save(function(err, jogas){
       expect(err).to.not.exist;
@@ -90,7 +92,8 @@ describe('Model Berlet', function () {
   });
   beforeEach(function (done) {
     berlet = new Berlet({
-      alkalmak: 10
+      alkalmak: 10,
+      fizetett: 500
     });
     jogas.berletek.push(berlet);
     done();

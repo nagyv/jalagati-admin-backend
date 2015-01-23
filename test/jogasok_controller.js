@@ -171,7 +171,7 @@ describe('Jogas Controller:', function() {
       var o = {
         headers: headers,
         method: 'POST',
-        url: '/jogasok/' + jogasId + '/ujberlet?alkalmak=10'
+        url: '/jogasok/' + jogasId + '/ujberlet?alkalmak=10&fizetett=100'
       };
       server.inject(o, function(resp){
         expect(resp.statusCode).to.equal(200);

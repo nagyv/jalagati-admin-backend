@@ -1,3 +1,5 @@
+'use strict';
+
 var Lab = require('lab');
 
 var mongoose = require('mongoose');
@@ -40,7 +42,8 @@ function getJogas(jogas, cb) {
 
 function buyBerlet(jogas, cb) {
   jogas.berletek.push(new Berlet({
-    alkalmak: 10
+    alkalmak: 10,
+    fizetett: 1000
   }));
   jogas.save(cb);
 }
