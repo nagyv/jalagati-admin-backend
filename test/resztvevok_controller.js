@@ -44,6 +44,40 @@ describe('Resztvevok Controller', function(){
   afterEach(utils.clearAllJogas);
   afterEach(utils.clearAllAlkalom);
 
+  describe('allResztvevo', function(){
+    utils.requiresLoginTest({
+      method: 'GET',
+      url: '/resztvevok/abcd'
+    });
+
+    it('returns all Resztvevo', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        method: 'GET',
+        url: '/resztvevok'
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.have.length.above(1);
+        done();
+      });
+    }));
+
+    it('returns filtered Resztvevo', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        method: 'GET',
+        url: '/resztvevok?alkalom=' + alkalom.id
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.have.length(1);
+        expect(rsp.result[0].jogas.name).to.exist;
+        done();
+      });
+    }));
+  });
+
   describe('egyResztvevo', function(){
     utils.requiresLoginTest({
       method: 'GET',
