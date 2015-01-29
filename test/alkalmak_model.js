@@ -36,8 +36,21 @@ describe('Model Alkalom:', function () {
 
   describe('Method Save', function () {
     it('should be able to save without problems', function (done) {
-      return alkalom.save(function (err) {
+      return alkalom.save(function (err, alkalom) {
         expect(err).to.not.exist();
+        expect(alkalom.state).to.equal('open');
+        done();
+      });
+    });
+  });
+  describe('method close', function() {
+    beforeEach(function(done){
+      alkalom.save(done);
+    });
+    it('closes the alkalom', function(done){
+      alkalom.close(function(err, alkalom){
+        expect(err).to.not.exist();
+        expect(alkalom.state).to.equal('closed');
         done();
       });
     });

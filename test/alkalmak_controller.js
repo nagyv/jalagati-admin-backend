@@ -138,6 +138,36 @@ describe('Alkalmak Controller:', function() {
     }));
   });
 
+  describe('close', function(){
+    var alkalom;
+    beforeEach(function(done){
+      utils.createAlkalom(done, function(err, _alkalom){
+        alkalom = _alkalom;
+      });
+    });
+
+    utils.requiresLoginTest({
+      url: '/alkalmak/abcd/close',
+      method: 'POST',
+      payload: {}
+    });
+
+    it('calls alkalom.close', utils.loggedInWrapper(function(headers, done){
+      var o = {
+        headers: headers,
+        url: '/alkalmak/' + alkalom._id + '/close',
+        method: 'POST',
+        payload: {}
+      };
+      server.inject(o, function(rsp){
+        expect(rsp.statusCode).to.equal(200);
+        expect(rsp.result).to.be.a('object');
+        expect(rsp.result.state).to.be.equal('closed');
+        done();
+      });
+    }));
+  });
+
   describe('addResztvevo', function(){
     var alkalom, jogas;
     beforeEach(function(done){
