@@ -34,7 +34,9 @@ function createJogas(done, cb) {
   });
 }
 function clearAllJogas(done) {
-  Jogas.remove({}, done);
+  Jogas.remove({}, function(){
+    Berlet.remove({}, done);
+  });
 }
 function getJogas(jogas, cb) {
   Jogas.findById(jogas._id, cb);

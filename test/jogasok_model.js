@@ -99,9 +99,7 @@ describe('Model Berlet', function () {
     done();
   });
   afterEach(function (done) {
-    Jogas.remove({});
-    Berlet.remove({});
-    done();
+    utils.clearAllJogas(done);
   });
 
   it('can be attached to Jogas and accessed under berlet', function (done) {
@@ -215,6 +213,31 @@ describe('Model Berlet', function () {
       berlet.endDate = Date.now() + 5000;
       expect(berlet.isValid()).to.be.false();
       done();
+    });
+  });
+  describe('listActive', function() {
+    beforeEach(function(done){
+      // adds a valid and an invalid berlet
+      var yesterday = moment().subtract(1, 'days');
+      jogas.berletek[0].startDate = yesterday.toDate();
+      jogas.berletek[0].endDate = yesterday.clone().add(3, 'months').toDate();
+      var berlet2 = new Berlet({
+        startDate: yesterday.clone().subtract(4, 'month').toDate(),
+        endDate: yesterday.clone().subtract(2, 'months').toDate(),
+        fizetett: 100
+      });
+      jogas.berletek.push(berlet2);
+      jogas.save(done);
+    });
+
+    it('returns all the active berlets', function(done){
+      Berlet.listActive(function(err, berletek){
+        expect(err).to.not.exist;
+        expect(berletek).to.have.length(1);
+        expect(berletek[0].name).to.equal(jogas.name);
+        expect(moment(berletek[0].berlet.startDate).isSame(jogas.berletek[0].startDate)).to.be.true();
+        done();
+      });
     });
   });
 });
