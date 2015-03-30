@@ -68,7 +68,7 @@ describe('Model User:', function () {
     });
 
     it('should be able to show an error when try to save without name', function (done) {
-      user.name = '';
+      user.username = '';
       return user.save(function (err) {
         expect(err).to.exist;
         done();
